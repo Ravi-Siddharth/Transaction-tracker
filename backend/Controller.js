@@ -1,5 +1,5 @@
 
-const Transaction = require("./models/transaction.js");
+const Transaction = require("./models/Transaction.js");
 const File = require("./models/file.js");
 const User = require("./models/User.js");
 const mongoose = require("mongoose")
