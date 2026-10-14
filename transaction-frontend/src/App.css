@@ -1,0 +1,508 @@
+
+/* =========================
+   GLOBAL STYLES
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  overflow-x: hidden;
+}
+
+/* =========================
+   MAIN APP LAYOUT
+========================= */
+
+.app {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Sidebar must keep its own width.
+   Dashboard uses the remaining space. */
+
+.dashboard-content {
+  flex: 1;
+  min-width: 0;
+  margin-left: 250px;
+  width: calc(100% - 250px);
+  box-sizing: border-box;
+  overflow-x: clip;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+  width: 100%;
+  background: #222;
+  color: #fff;
+  padding: 20px 30px;
+}
+
+.navbar h2 {
+  font-size: 24px;
+  overflow-wrap: anywhere;
+}
+
+/* =========================
+   DASHBOARD CONTAINER
+========================= */
+
+.container {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 20px 0;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.container > h1 {
+  margin-bottom: 20px;
+  color: #111;
+  font-size: 28px;
+}
+
+/* =========================
+   SUMMARY CARDS
+========================= */
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 30px;
+}
+
+.card {
+  min-width: 0;
+  padding: 25px;
+  background: rgb(121, 14, 14);
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  overflow-wrap: anywhere;
+}
+
+.card h3 {
+  margin-bottom: 10px;
+  color: #eee;
+  font-size: 16px;
+}
+
+.card p {
+  font-size: 28px;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+
+/* =========================
+   TRANSACTION FORM
+========================= */
+
+.form-transaction {
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 30px;
+  padding: 25px;
+  background: #0b0a0a;
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-transaction h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.form-transaction form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  width: 100%;
+  min-width: 0;
+}
+
+.form-transaction input,
+.form-transaction select {
+  width: 100%;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid #510a0a;
+  border-radius: 6px;
+  background: #fff;
+  color: #222;
+  font-size: 15px;
+}
+
+.add-btn,
+.cancel-btn {
+  grid-column: 1 / -1;
+  width: 100%;
+  padding: 12px;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.add-btn {
+  background: #e53935;
+}
+
+.add-btn:hover {
+  background: #c62828;
+}
+
+.cancel-btn {
+  background: #555;
+}
+
+.cancel-btn:hover {
+  background: #333;
+}
+
+/* =========================
+   TRANSACTIONS LIST
+========================= */
+
+.transactions {
+  width: 100%;
+  min-width: 0;
+  padding: 25px;
+  background: #0b0606;
+  color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.transactions h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+}
+
+.transaction {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  min-width: 0;
+  padding: 18px 0;
+  border-bottom: 1px solid #444;
+}
+
+.transaction > div {
+  min-width: 0;
+}
+
+.transaction h3 {
+  margin-bottom: 5px;
+  color: #fff;
+  overflow-wrap: anywhere;
+}
+
+.transaction p {
+  color: #aaa;
+  overflow-wrap: anywhere;
+}
+
+.income {
+  margin-right: 15px;
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.expense {
+  margin-right: 15px;
+  color: #ef5350;
+  font-weight: bold;
+}
+
+.edit-btn,
+.delete-btn {
+  margin: 4px 3px;
+  padding: 8px 12px;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: #1976d2;
+}
+
+.edit-btn:hover {
+  background: #125aa0;
+}
+
+.delete-btn {
+  background: #e53935;
+}
+
+.delete-btn:hover {
+  background: #c62828;
+}
+
+/* =========================
+   CREDIT VS DEBIT CHART
+========================= */
+
+.chart-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 20px 0;
+  padding: 20px;
+  background: #fff;
+  color: #222;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+.chart-container h2 {
+  margin-bottom: 15px;
+  font-size: 22px;
+}
+
+.pie-chart {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 300px;
+}
+
+/* =========================
+   TRANSACTION HISTORY CHART
+========================= */
+
+.transaction-history {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 20px 0;
+  padding: 20px;
+  background: #fff;
+  color: #222;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.transaction-history h2 {
+  margin-bottom: 8px;
+  font-size: 22px;
+  overflow-wrap: anywhere;
+}
+
+.history-description {
+  margin: 0 0 16px;
+  color: #666;
+  font-size: 14px;
+}
+
+.history-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 15px;
+  font-size: 13px;
+}
+
+.history-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.history-legend i {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.income-dot {
+  background: #20a464;
+}
+
+.expense-dot {
+  background: #e34b4b;
+}
+
+.balance-dot {
+  background: #2878d0;
+}
+
+.history-chart {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 320px;
+}
+
+.history-chart .recharts-responsive-container {
+  max-width: 100%;
+}
+
+.history-tooltip {
+  max-width: 220px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.history-tooltip p {
+  margin: 6px 0 0;
+}
+
+.history-error {
+  color: #c62828;
+}
+
+/* =========================
+   TABLET LAYOUT
+========================= */
+
+@media (max-width: 1000px) {
+  .summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card p {
+    font-size: 24px;
+  }
+
+  .chart-container,
+  .transaction-history {
+    padding: 16px;
+  }
+}
+
+/* =========================
+   MOBILE LAYOUT
+========================= */
+
+@media (max-width: 700px) {
+  .navbar {
+    padding: 16px;
+  }
+
+  .navbar h2 {
+    font-size: 20px;
+  }
+
+  .container {
+    margin: 16px 0;
+    padding: 0 12px;
+  }
+
+  .container > h1 {
+    font-size: 24px;
+  }
+
+  .summary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .card p {
+    font-size: 24px;
+  }
+
+  .form-transaction {
+    padding: 16px;
+  }
+
+  .form-transaction form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .form-transaction h2,
+  .transactions h2 {
+    font-size: 20px;
+  }
+
+  .transaction {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .transaction > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .income,
+  .expense {
+    margin-right: 8px;
+  }
+
+  .chart-container {
+    padding: 12px;
+  }
+
+  .chart-container h2 {
+    font-size: 19px;
+  }
+
+  .pie-chart {
+    height: 260px;
+  }
+
+  .transaction-history {
+    margin: 12px 0;
+    padding: 12px;
+  }
+
+  .transaction-history h2 {
+    font-size: 19px;
+  }
+
+  .history-chart {
+    height: 270px;
+  }
+}
