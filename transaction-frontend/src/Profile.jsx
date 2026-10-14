@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Profile.css";
 
-const API = "http://localhost:5000/api";
+const API = "/api";
 
 function Profile() {
   const navigate = useNavigate();

@@ -14,7 +14,7 @@ import {
 
 import "./TransactionHistory.css";
 
-const API = "http://localhost:5000/api";
+const API = "/api";
 
 function TransactionHistory() {
   const [transactions, setTransactions] = useState([]);

@@ -23,7 +23,7 @@ function OtpVerification() {
         }
         try{
             setLoading(true);
-            const response = await axios.post("http://localhost:5000/api/verify-otp", {userId: userId, otp: otp});
+            const response = await axios.post("/api/verify-otp", {userId: userId, otp: otp});
             alert(response.data.message);
             navigate("/reset-password", {
                 state: {

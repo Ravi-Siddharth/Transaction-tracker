@@ -34,7 +34,7 @@ function Dashboard() {
         }
 
         const res = await axios.get(
-          "http://localhost:5000/api/transactions",
+          "/api/transactions",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -105,7 +105,7 @@ function Dashboard() {
 
       if (editId) {
         const res = await axios.put(
-          `http://localhost:5000/api/transactions/${editId}`,
+          `/api/transactions/${editId}`,
           transactionData,
           {
             headers: {
@@ -126,7 +126,7 @@ function Dashboard() {
         setEditId(null);
       } else {
         const res = await axios.post(
-          "http://localhost:5000/api/transactions",
+          "/api/transactions",
           transactionData,
           {
             headers: {
@@ -191,7 +191,7 @@ function Dashboard() {
       const token = localStorage.getItem("token");
 
       await axios.delete(
-        `http://localhost:5000/api/transactions/${id}`,
+        `/api/transactions/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
