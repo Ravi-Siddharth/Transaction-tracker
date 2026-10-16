@@ -1,27 +1,24 @@
 
-const express = require("express");
+import express from "express";
 
-const {
+import {
   getTransactions,
   addTransaction,
   updateTransaction,
   deleteTransaction,
   getSummary,
-
   forgotPassword,
   verifyOtp,
   resetPassword,
-
   UploadProfilePicture,
-
   getProfile,
   updateProfile,
   updateProfilePicture,
   getProfilePicture,
-} = require("./Controller.js");
+} from "./Controller.js";
 
-const { register, login } = require("./AuthController.js");
-const Upload = require("./Upload.js");
+import { register, login } from "./AuthController.js";
+import Upload from "./Upload.js";
 
 const router = express.Router();
 
@@ -47,7 +44,7 @@ router.post("/reset-password", resetPassword);
 router.get("/profile", getProfile);
 router.put("/profile", updateProfile);
 
-// Profile picture: save and retrieve
+// Profile picture
 router.put(
   "/profile-picture",
   Upload.single("file"),
@@ -63,4 +60,4 @@ router.post(
   UploadProfilePicture
 );
 
-module.exports = router;
+export default router;

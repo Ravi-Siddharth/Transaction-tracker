@@ -1,5 +1,5 @@
 
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -22,7 +22,6 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
 
-
   profilePicture: {
     data: {
       type: Buffer,
@@ -33,7 +32,6 @@ const userSchema = new mongoose.Schema({
       default: "",
     },
   },
-
 
   uploadedFiles: [
     {
@@ -69,4 +67,4 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+export default User;

@@ -1,19 +1,16 @@
 
-const Transaction = require("./models/Transaction.js");
-const File = require("./models/file.js");
-const User = require("./models/User.js");
-const mongoose = require("mongoose")
-const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
-const bcrypt = require("bcryptjs");
-const nodemailer = require("nodemailer");
-const fs = require("fs");
-const path = require("path");
+import Transaction from "./models/Transaction.js";
+import File from "./models/file.js";
+import User from "./models/User.js";
+import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import bcrypt from "bcryptjs";
+import nodemailer from "nodemailer";
+import fs from "fs";
+import path from "path";
 
 const SECRET_KEY = process.env.JWT_SECRETKEY;
-
-
-
 
 const getAuthenticatedUser = (req) => {
   const authHeader = req.headers.authorization;
@@ -35,9 +32,6 @@ const getAuthenticatedUser = (req) => {
   return jwt.verify(token, SECRET_KEY);
 };
 
-
-
-
 const getTransactions = async (req, res) => {
   try {
     const decoded = getAuthenticatedUser(req);
@@ -48,12 +42,16 @@ const getTransactions = async (req, res) => {
 
     res.json(transactions);
   } catch (err) {
-    if (err.name === "JsonWebTokenError") {
-      return res.status(401).json({ error: "Invalid token" });
-    }
-
-    if (err.name === "TokenExpiredError") {
-      return res.status(401).json({ error: "Token expired" });
+    if (
+      err.name === "JsonWebTokenError" ||
+      err.name === "TokenExpiredError"
+    ) {
+      return res.status(401).json({
+        error:
+          err.name === "TokenExpiredError"
+            ? "Token expired"
+            : "Invalid token",
+      });
     }
 
     res.status(err.statusCode || 500).json({
@@ -62,13 +60,9 @@ const getTransactions = async (req, res) => {
   }
 };
 
-
-
-
 const addTransaction = async (req, res) => {
   try {
     const decoded = getAuthenticatedUser(req);
-
     const { title, amount, type, date } = req.body;
 
     if (
@@ -106,12 +100,16 @@ const addTransaction = async (req, res) => {
 
     res.status(201).json(newTransaction);
   } catch (err) {
-    if (err.name === "JsonWebTokenError") {
-      return res.status(401).json({ error: "Invalid token" });
-    }
-
-    if (err.name === "TokenExpiredError") {
-      return res.status(401).json({ error: "Token expired" });
+    if (
+      err.name === "JsonWebTokenError" ||
+      err.name === "TokenExpiredError"
+    ) {
+      return res.status(401).json({
+        error:
+          err.name === "TokenExpiredError"
+            ? "Token expired"
+            : "Invalid token",
+      });
     }
 
     res.status(err.statusCode || 500).json({
@@ -120,12 +118,9 @@ const addTransaction = async (req, res) => {
   }
 };
 
-
-
 const updateTransaction = async (req, res) => {
   try {
     const decoded = getAuthenticatedUser(req);
-
     const { title, amount, type, date } = req.body;
 
     if (
@@ -178,12 +173,16 @@ const updateTransaction = async (req, res) => {
 
     res.json(updatedTransaction);
   } catch (err) {
-    if (err.name === "JsonWebTokenError") {
-      return res.status(401).json({ error: "Invalid token" });
-    }
-
-    if (err.name === "TokenExpiredError") {
-      return res.status(401).json({ error: "Token expired" });
+    if (
+      err.name === "JsonWebTokenError" ||
+      err.name === "TokenExpiredError"
+    ) {
+      return res.status(401).json({
+        error:
+          err.name === "TokenExpiredError"
+            ? "Token expired"
+            : "Invalid token",
+      });
     }
 
     res.status(err.statusCode || 500).json({
@@ -191,9 +190,6 @@ const updateTransaction = async (req, res) => {
     });
   }
 };
-
-
-
 
 const deleteTransaction = async (req, res) => {
   try {
@@ -212,12 +208,16 @@ const deleteTransaction = async (req, res) => {
 
     res.status(204).send();
   } catch (err) {
-    if (err.name === "JsonWebTokenError") {
-      return res.status(401).json({ error: "Invalid token" });
-    }
-
-    if (err.name === "TokenExpiredError") {
-      return res.status(401).json({ error: "Token expired" });
+    if (
+      err.name === "JsonWebTokenError" ||
+      err.name === "TokenExpiredError"
+    ) {
+      return res.status(401).json({
+        error:
+          err.name === "TokenExpiredError"
+            ? "Token expired"
+            : "Invalid token",
+      });
     }
 
     res.status(err.statusCode || 500).json({
@@ -226,156 +226,108 @@ const deleteTransaction = async (req, res) => {
   }
 };
 
-
+// Summary grouped by date for the logged-in user
 const getSummary = async (req, res) => {
   try {
     const decoded = getAuthenticatedUser(req);
-const data = await Transaction.aggregate([{
-  $group:{
-    _id:"$date",
-    count:{
-      $sum:1
-    },
-    totalIncome: {
-            $sum: {
-              $cond: [
-                { $eq: ["$type", "income"] },
-                "$amount",
-                0
-              ]
-            }
-          },
-          totalExpense: {
-            $sum: {
-              $cond: [
-                { $eq: ["$type", "expense"] },
-                "$amount",
-                0
-              ]
-            }}
-  }
-}])
+
     const summary = await Transaction.aggregate([
-      
       {
         $match: {
-          user: new mongoose.Types.ObjectId(decoded.id)
-        }
+          user: new mongoose.Types.ObjectId(decoded.id),
+        },
       },
-
-      
       {
         $addFields: {
           groupedDate: {
             $dateToString: {
               format: "%Y-%m-%d",
-              date: { $toDate: "$date" }
-            }
-          }
-        }
+              date: { $toDate: "$date" },
+            },
+          },
+        },
       },
-
-      
       {
         $sort: {
           date: 1,
-          _id: 1
-        }
+          _id: 1,
+        },
       },
-
-      
       {
         $group: {
           _id: "$groupedDate",
-
-        
-transactions: {
-  $push: {
-    _id: "$_id",
-    title: "$title",
-    amount: "$amount",
-    date: "$date",
-    type: "$type"
-  }
-},
-
-
+          transactions: {
+            $push: {
+              _id: "$_id",
+              title: "$title",
+              amount: "$amount",
+              date: "$date",
+              type: "$type",
+            },
+          },
           totalIncome: {
             $sum: {
               $cond: [
                 { $eq: ["$type", "income"] },
                 "$amount",
-                0
-              ]
-            }
+                0,
+              ],
+            },
           },
-
           totalExpense: {
             $sum: {
               $cond: [
                 { $eq: ["$type", "expense"] },
                 "$amount",
-                0
-              ]
-            }
-          }
-        }
+                0,
+              ],
+            },
+          },
+        },
       },
-
-  
       {
         $addFields: {
           balance: {
-            $subtract: [
-              "$totalIncome",
-              "$totalExpense"
-            ]
-          }
-        }
+            $subtract: ["$totalIncome", "$totalExpense"],
+          },
+        },
       },
-
-
-      
-{
-  $project: {
-    _id: 0,
-    date: "$_id",
-    transactions: 1,
-    totalIncome: 1,
-    totalExpense: 1,
-    balance: 1
-  }
-},
-
-      
+      {
+        $project: {
+          _id: 0,
+          date: "$_id",
+          transactions: 1,
+          totalIncome: 1,
+          totalExpense: 1,
+          balance: 1,
+        },
+      },
       {
         $sort: {
-          date: -1
-        }
-      }
+          date: -1,
+        },
+      },
     ]);
 
     return res.status(200).json({
       success: true,
-      data: data
+      data: summary,
     });
-
   } catch (err) {
     if (
       err.name === "JsonWebTokenError" ||
       err.name === "TokenExpiredError"
     ) {
       return res.status(401).json({
-        error: "Invalid or expired token"
+        error: "Invalid or expired token",
       });
     }
 
     return res.status(err.statusCode || 500).json({
-      error: err.message
+      error: err.message,
     });
   }
 };
-
 
 const forgotPassword = async (req, res) => {
   try {
@@ -397,10 +349,8 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-   
     const otp = crypto.randomInt(100000, 1000000).toString();
 
-    
     user.resetOtp = otp;
     user.resetOtpExpiry = new Date(Date.now() + 5 * 60 * 1000);
 
@@ -427,7 +377,6 @@ const forgotPassword = async (req, res) => {
       text: `Your password reset OTP is ${otp}. It expires in 5 minutes.`,
     });
 
-    
     res.status(200).json({
       message: "OTP sent successfully",
       userId: user._id,
@@ -440,6 +389,7 @@ const forgotPassword = async (req, res) => {
     });
   }
 };
+
 const verifyOtp = async (req, res) => {
   try {
     const { userId, otp } = req.body;
@@ -491,9 +441,6 @@ const verifyOtp = async (req, res) => {
   }
 };
 
-
-
-
 const resetPassword = async (req, res) => {
   try {
     const { userId, otp, newPassword } = req.body;
@@ -534,8 +481,6 @@ const resetPassword = async (req, res) => {
     }
 
     user.password = await bcrypt.hash(newPassword, 10);
-
-   
     user.resetOtp = null;
     user.resetOtpExpiry = null;
 
@@ -611,6 +556,7 @@ const UploadProfilePicture = async (req, res) => {
     });
   }
 };
+
 const getProfile = async (req, res) => {
   try {
     const decoded = getAuthenticatedUser(req);
@@ -627,12 +573,16 @@ const getProfile = async (req, res) => {
 
     res.json(user);
   } catch (err) {
-    if (err.name === "JsonWebTokenError") {
-      return res.status(401).json({ error: "Invalid token" });
-    }
-
-    if (err.name === "TokenExpiredError") {
-      return res.status(401).json({ error: "Token expired" });
+    if (
+      err.name === "JsonWebTokenError" ||
+      err.name === "TokenExpiredError"
+    ) {
+      return res.status(401).json({
+        error:
+          err.name === "TokenExpiredError"
+            ? "Token expired"
+            : "Invalid token",
+      });
     }
 
     res.status(err.statusCode || 500).json({
@@ -641,13 +591,9 @@ const getProfile = async (req, res) => {
   }
 };
 
-
-
-
 const updateProfile = async (req, res) => {
   try {
     const decoded = getAuthenticatedUser(req);
-
     const { firstName, lastName, email } = req.body;
 
     if (
@@ -696,12 +642,16 @@ const updateProfile = async (req, res) => {
       },
     });
   } catch (err) {
-    if (err.name === "JsonWebTokenError") {
-      return res.status(401).json({ error: "Invalid token" });
-    }
-
-    if (err.name === "TokenExpiredError") {
-      return res.status(401).json({ error: "Token expired" });
+    if (
+      err.name === "JsonWebTokenError" ||
+      err.name === "TokenExpiredError"
+    ) {
+      return res.status(401).json({
+        error:
+          err.name === "TokenExpiredError"
+            ? "Token expired"
+            : "Invalid token",
+      });
     }
 
     res.status(err.statusCode || 500).json({
@@ -726,6 +676,7 @@ const updateProfilePicture = async (req, res) => {
 
     if (!req.file.mimetype.startsWith("image/")) {
       await fs.promises.unlink(uploadedPath);
+      uploadedPath = null;
 
       return res.status(400).json({
         error: "Please upload an image file",
@@ -733,11 +684,11 @@ const updateProfilePicture = async (req, res) => {
     }
 
     const imageData = await fs.promises.readFile(uploadedPath);
-
     const user = await User.findById(decoded.id);
 
     if (!user) {
       await fs.promises.unlink(uploadedPath);
+      uploadedPath = null;
 
       return res.status(404).json({
         error: "User not found",
@@ -757,21 +708,17 @@ const updateProfilePicture = async (req, res) => {
       message: "Profile picture saved successfully",
     });
   } catch (err) {
+    if (uploadedPath) {
+      await fs.promises.unlink(uploadedPath).catch(() => {});
+    }
+
     if (
       err.name === "JsonWebTokenError" ||
       err.name === "TokenExpiredError"
     ) {
-      if (uploadedPath) {
-        await fs.promises.unlink(uploadedPath).catch(() => {});
-      }
-
       return res.status(401).json({
         error: "Invalid or expired token",
       });
-    }
-
-    if (uploadedPath) {
-      await fs.promises.unlink(uploadedPath).catch(() => {});
     }
 
     console.error("Profile picture error:", err.message);
@@ -781,6 +728,7 @@ const updateProfilePicture = async (req, res) => {
     });
   }
 };
+
 const getProfilePicture = async (req, res) => {
   try {
     const decoded = getAuthenticatedUser(req);
@@ -800,12 +748,16 @@ const getProfilePicture = async (req, res) => {
 
     res.send(user.profilePicture.data);
   } catch (err) {
-    if (err.name === "JsonWebTokenError") {
-      return res.status(401).json({ error: "Invalid token" });
-    }
-
-    if (err.name === "TokenExpiredError") {
-      return res.status(401).json({ error: "Token expired" });
+    if (
+      err.name === "JsonWebTokenError" ||
+      err.name === "TokenExpiredError"
+    ) {
+      return res.status(401).json({
+        error:
+          err.name === "TokenExpiredError"
+            ? "Token expired"
+            : "Invalid token",
+      });
     }
 
     res.status(err.statusCode || 500).json({
@@ -813,19 +765,17 @@ const getProfilePicture = async (req, res) => {
     });
   }
 };
-module.exports = {
+
+export {
   getTransactions,
   addTransaction,
   updateTransaction,
   deleteTransaction,
   getSummary,
-
   forgotPassword,
   verifyOtp,
   resetPassword,
-
   UploadProfilePicture,
-
   getProfile,
   updateProfile,
   updateProfilePicture,

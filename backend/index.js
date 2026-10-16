@@ -1,42 +1,59 @@
-require("dotenv").config()
-const express = require("express");
-const cors = require("cors");
-require("./db.js");
-const router = require("./Router.js");
 
-const PORT = 5000;
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import "./db.js";
+
+import router from "./Router.js";
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-app.use((err, req, res, next) => {
-  // Log the stack trace internally for debugging
-  console.error(`[ERROR] ${req.method} ${req.url} - ${err.message}`);
-  console.error(err.stack);
+// Router diagnostics
+console.log("Router type:", typeof router);
+console.log("Router is function:", typeof router === "function");
 
-  // Production vs Development response tracking
-  const statusCode = err.statusCode || 500;
-  const response = {
-    status: 'error',
-    message: err.message || 'Internal Server Error'
-  };
+if (typeof router !== "function") {
+  throw new TypeError(
+    "Router.js must export a valid Express router function"
+  );
+}
 
-    response.stack = err.stack; // Only expose stack traces in dev
-  
-
-  res.status(statusCode).json(response);
-  next()
-});
+// API routes
 app.use("/api", router);
 
-if (
-  process.env.NODE_ENV !== "production"
-) {
+// Error-handling middleware
+app.use((err, req, res, next) => {
+  console.error(
+    `[ERROR] ${req.method} ${req.originalUrl}`,
+    err.stack || err.message
+  );
+
+  if (res.headersSent) {
+    return next(err);
+  }
+
+  const statusCode = err.statusCode || 500;
+
+  res.status(statusCode).json({
+    status: "error",
+    message:
+      process.env.NODE_ENV === "production"
+        ? "Internal Server Error"
+        : err.message
+  });
+});
+
+// Local development server
+if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
-  })
+  });
 }
-module.exports = app;
+
+// Export the Express app for Vercel
+export default app;
