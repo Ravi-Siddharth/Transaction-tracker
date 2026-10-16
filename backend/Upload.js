@@ -2,14 +2,10 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { fileURLToPath } from "url";
 
-// Get the current directory in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const uploadDir = path.join("/tmp", "uploads");
 
-const uploadDir = path.join(__dirname, "uploads");
-
+// Create the temporary upload directory if it does not exist
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -32,9 +28,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-
   limits: {
-    fileSize: 5 * 1024 * 1024,
+    fileSize: 5 * 1024 * 1024, // 5 MB
   },
 
   fileFilter: (req, file, cb) => {
