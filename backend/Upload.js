@@ -2,8 +2,8 @@
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-
-const uploadDir = path.join("/tmp", "uploads");
+import os from "os"
+const uploadDir = path.join(os.tmpdir(), "uploads");
 
 // Create the temporary upload directory if it does not exist
 if (!fs.existsSync(uploadDir)) {
